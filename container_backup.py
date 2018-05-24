@@ -9,6 +9,9 @@ import yaml
 # Config file relative path
 CONFIG_FILE_PATH = "config.yaml"
 
+# Maximum number of characters for a container name
+MAX_CONTAINER_CHARS = 63
+
 def get_blob_container_url(storage_account, container):
     """Get's a blob container's URL."""
     return "https://" + storage_account + ".blob.core.windows.net/" + container
@@ -36,19 +39,25 @@ today = datetime.datetime.today()
 
 # Load an object that lets us create new containers
 destination_blob_service = azure.storage.blob.BlockBlobService(
-                            account_name=config['destination_storage_account']['storage_account'],
-                            account_key=config['destination_storage_account']['storage_key'],)
+         account_name=config['destination_storage_account']['storage_account'],
+         account_key=config['destination_storage_account']['storage_key'],)
 
 # Backup each container
 for source_container in config['source_containers']:
     # Make the name
     destination_container_name = (today.strftime('%Y%m%d-%H%M')
                                   + '-'
+                                  + '-backup'
+                                  + '-'
                                   + source_container['container_name']
-                                  + '-backup')
+                                 )
+
+    # Ensure that it meets the name length restrictions of Azure containers
+    destination_container_name_tiny = (
+                        destination_container_name[:MAX_CONTAINER_CHARS])
 
     # Make the container
-    destination_blob_service.create_container(destination_container_name)
+    destination_blob_service.create_container(destination_container_name_tiny)
 
     # Get the log file
     logpath = os.path.join(config['relative_log_path'],
@@ -63,7 +72,7 @@ for source_container in config['source_containers']:
                  "--source-key",
                  config['destination_storage_account']['storage_key'],
                  "--destination",
-                 get_blob_container_url(destination_container_name),
+                 get_blob_container_url(destination_container_name_tiny),
                  "--destination-key",
                  source_container['storage_key'],
                  "--recursive",                   # copy everything
