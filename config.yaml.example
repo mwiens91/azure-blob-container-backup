@@ -1,0 +1,16 @@
+# YAML config file
+---
+source_containers:
+    - container_name: blob-container-1
+      storage_account: azure-storage-account-1
+      storage_key: longkeyhere1234567890==
+    - container_name: blob-container-2
+      storage_account: azure-storage-account-2
+      storage_key: longkeyhere1234567890==
+
+destination_storage_account:
+    storage_account: azure-destination-storage-account
+    storage_key: longkeyhere1234567890==
+
+relative_log_path: logs/
+...
