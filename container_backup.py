@@ -15,7 +15,7 @@ def get_blob_container_url(storage_account, container):
 
 
 # Make sure we have azcopy available
-if not subprocess.Popen(["bash", "-c", "type azcopy"],
+if subprocess.Popen(["bash", "-c", "type azcopy"],
                         stdout=subprocess.DEVNULL,
                         stderr=subprocess.DEVNULL).wait():
     # Non-zero return code! No good!
