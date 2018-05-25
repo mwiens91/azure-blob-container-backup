@@ -96,8 +96,12 @@ def generate_destination_container_name(source_container_name,
 
 
 def shorten_destination_container_name(container_name):
-    """Ensures that a container name is short enough for Azure."""
-    return container_name[:MAX_CONTAINER_CHARS]
+    """Ensures that a container name is valid for Azure.
+
+    The restrictions we care about here are character length and ensuring we
+    don't end with a dash.
+    """
+    return container_name[:MAX_CONTAINER_CHARS].rstrip('-')
 
 
 def main():
