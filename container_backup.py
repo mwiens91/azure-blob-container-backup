@@ -35,7 +35,12 @@ def parse_runtime_args():
     parser = argparse.ArgumentParser(
         prog=NAME,
         description="%(prog)s - " + DESCRIPTION,)
-    parser.add_argument(
+    noiseoptions = parser.add_mutually_exclusive_group()
+    noiseoptions.add_argument(
+        "--quiet", "--silent",
+        help="only print critical azure storage errors",
+        action="store_true")
+    noiseoptions.add_argument(
         "-v", "--verbose",
         help="print what the script is doing",
         action="store_true")
@@ -95,8 +100,9 @@ def main():
                         stdout=subprocess.DEVNULL,
                         stderr=subprocess.DEVNULL).wait():
         # Non-zero return code! No good!
-        print("azcopy not found")
-        print("Aborting")
+        if not runtime_args.quiet:
+            print("azcopy not found")
+            print("Aborting")
 
         # Exit exript
         sys.exit(1)
