@@ -61,7 +61,8 @@ def get_blob_container_url(storage_account, container):
     return "https://" + storage_account + ".blob.core.windows.net/" + container
 
 
-def generate_destination_container_name(source_container_name,
+def generate_destination_container_name(source_storage_account_name,
+                                        source_container_name,
                                         extra_identifier="",
                                         datetimeobj=datetime.datetime.today()):
     """Generates the name of the backup container.
@@ -71,6 +72,8 @@ def generate_destination_container_name(source_container_name,
     function.
 
     Args:
+        source_storage_account_name: A string containing the source
+            storage account's name.
         source_container_name: A string containing the source container's name.
         extra_identifier: An optional string containing extra identifying
             characteristics for a destination container, used to resolve
@@ -81,18 +84,14 @@ def generate_destination_container_name(source_container_name,
         A string containing the destination container's name.
     """
     if extra_identifier:
-        return (datetimeobj.strftime('%Y%m%d-%H%M')
-                + '-backup-'
+        return (datetimeobj.strftime('%Y%m%d%H%M')
+                + 'backup'
                 + extra_identifier
+                + '-'
+                + source_storage_account_name
                 + '-'
                 + source_container_name
                )
-
-    # No extra ID
-    return (datetimeobj.strftime('%Y%m%d-%H%M')
-            + '-backup-'
-            + source_container_name
-           )
 
 
 def shorten_destination_container_name(container_name):
