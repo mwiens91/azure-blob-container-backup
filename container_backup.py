@@ -174,7 +174,7 @@ def main():
         # add to the container name identifier until we get a name that doesn't
         # already exist. Assume this *always* works, which is close enough to
         # be being true.
-        count = 0
+        count = 2
 
         if runtime_args.verbose:
             print("Verifying that container %s doesn't already exist"
