@@ -121,7 +121,7 @@ for source_container in config['source_containers']:
              get_blob_container_url(
                  config['destination_storage_account']['storage_account'],
                  destination_container_name_tiny),
-             "--destination-key",
+             "--dest-key",
              source_container['storage_key'],
              "--recursive",                   # copy everything
              "--quiet",                       # say yes to everything
