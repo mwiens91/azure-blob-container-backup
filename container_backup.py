@@ -7,6 +7,7 @@ import logging
 import os
 import pathlib
 import subprocess
+import sys
 import azure.storage.blob
 import yaml
 
@@ -96,6 +97,9 @@ def main():
         # Non-zero return code! No good!
         print("azcopy not found")
         print("Aborting")
+
+        # Exit exript
+        sys.exit(1)
 
     # Get the directory containing the script file. Necessary for relative
     # imports, while maintaining simplicity. See
