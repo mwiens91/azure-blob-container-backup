@@ -2,6 +2,7 @@
 """Script for backing up Azure blob storage containers."""
 
 import datetime
+import logging
 import os
 import pathlib
 import subprocess
@@ -72,6 +73,10 @@ pathlib.Path(config['relative_log_path']).mkdir(parents=True, exist_ok=True)
 destination_blob_service = azure.storage.blob.BlockBlobService(
     account_name=config['destination_storage_account']['storage_account'],
     account_key=config['destination_storage_account']['storage_key'],)
+
+# For the purposes of this program the azure.storage logging to stdout isn't
+# desirable, so only let it log messages when it's really important
+logging.getLogger("azure.storage").setLevel(logging.CRITICAL)
 
 # Backup each container
 for source_container in config['source_containers']:
