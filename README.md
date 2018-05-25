@@ -39,6 +39,13 @@ cron](https://fossbytes.com/how-to-schedule-jobs-in-linux-cron-crontab/).
 
 ## Details
 
+### Potentially very important
+
+If you're backing up **big** containers I'd recommend running this
+script on an Azure VM in the same region that one or both of the storage
+accounts are in. This is faster and cheaper than if they're in separate
+regions.
+
 ### Somewhat important
 
 AzCopy doesn't like being parallelized. In my experience, it has
