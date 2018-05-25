@@ -3,6 +3,7 @@
 
 import datetime
 import os
+import pathlib
 import subprocess
 import azure.storage.blob
 import yaml
@@ -34,6 +35,9 @@ os.chdir(os.path.dirname(os.path.abspath(__file__)))
 # Load YAML config file
 with open(CONFIG_FILE_PATH, 'r') as yamlfile:
     config = yaml.load(yamlfile)
+
+# Make sure the logs directory exists, and create it if so
+pathlib.Path(config['relative_log_path']).mkdir(parents=True, exist_ok=True)
 
 # Get today's datetime
 today = datetime.datetime.today()
