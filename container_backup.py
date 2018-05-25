@@ -15,8 +15,36 @@ CONFIG_FILE_PATH = "config.yaml"
 MAX_CONTAINER_CHARS = 63
 
 def get_blob_container_url(storage_account, container):
-    """Get's a blob container's URL."""
+    """Gets a blob container's URL."""
     return "https://" + storage_account + ".blob.core.windows.net/" + container
+
+def generate_destination_container_name(source_container_name,
+                                        extra_identifier="",
+                                        datetimeobj=datetime.datetime.today()):
+    """Generates the name of the backup container.
+
+    To meet the length restrictions on container names imposed by Azure, feed
+    the output of this function into the shorten_destination_container_name
+    function.
+
+    Args:
+        source_container_name: A string containing the source container's name.
+        extra_identifier: An optional string containing extra identifying
+            characteristics for a destination container, used to resolve
+            possible container name uniqueness issues.
+        datetimeobj: A datetime object.
+    Returns:
+        A string containing the destination container's name.
+    """
+    return (datetimeobj.strftime('%Y%m%d-%H%M')
+            + '-backup-'
+            + extra_identifier
+            + source_container_name
+           )
+
+def shorten_destination_container_name(container_name):
+    """Ensures that a container name is short enough for Azure."""
+    return container_name[:MAX_CONTAINER_CHARS]
 
 
 # Make sure we have azcopy available
@@ -27,9 +55,10 @@ if subprocess.Popen(["bash", "-c", "type azcopy"],
     print("azcopy not found")
     print("Aborting")
 
-# Move to the directory containing the script file. Necessary for
-# relative imports, while maintaining simplicity. See
+# Move to the directory containing the script file. Necessary for relative
+# imports, while maintaining simplicity. Emphasis on simplicity. See
 # https://stackoverflow.com/questions/1432924/python-change-the-scripts-working-directory-to-the-scripts-own-directory
+# for details on the specific commands used.
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 # Load YAML config file
@@ -39,10 +68,7 @@ with open(CONFIG_FILE_PATH, 'r') as yamlfile:
 # Make sure the logs directory exists, and create it if so
 pathlib.Path(config['relative_log_path']).mkdir(parents=True, exist_ok=True)
 
-# Get today's datetime
-today = datetime.datetime.today()
-
-# Load an object that lets us create new containers
+# Load an object that lets us interface with containers
 destination_blob_service = azure.storage.blob.BlockBlobService(
     account_name=config['destination_storage_account']['storage_account'],
     account_key=config['destination_storage_account']['storage_key'],)
@@ -50,14 +76,30 @@ destination_blob_service = azure.storage.blob.BlockBlobService(
 # Backup each container
 for source_container in config['source_containers']:
     # Make the name
-    destination_container_name = (today.strftime('%Y%m%d-%H%M')
-                                  + '-backup-'
-                                  + source_container['container_name']
-                                 )
+    destination_container_name = generate_destination_container_name(
+        source_container['container_name'])
 
     # Ensure that it meets the name length restrictions of Azure containers
-    destination_container_name_tiny = (
-        destination_container_name[:MAX_CONTAINER_CHARS])
+    destination_container_name_tiny = shorten_destination_container_name(
+        destination_container_name)
+
+    # Check first if the destination container already exists. Shortening the
+    # destination container name as above can cause, mostly in pathological cases,
+    # non-uniqueness problems, which makes this necessary.
+
+    # If a destination container already exists, iterate through numbers to add
+    # to the container name identifier until we get a name that doesn't already
+    # exist. Assume this *always* works, which is close enough to be being
+    # true.
+    count = 0
+    while destination_blob_service.exists(
+            container_name=destination_container_name_tiny):
+        # Make a new name
+        destination_container_name_tiny = shorten_destination_container_name(
+            generate_destination_container_name(
+                source_container['container_name'],
+                '-' + str(count) + '-',
+                ))
 
     # Make the container
     destination_blob_service.create_container(destination_container_name_tiny)
