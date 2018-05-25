@@ -47,9 +47,7 @@ destination_blob_service = azure.storage.blob.BlockBlobService(
 for source_container in config['source_containers']:
     # Make the name
     destination_container_name = (today.strftime('%Y%m%d-%H%M')
-                                  + '-'
-                                  + '-backup'
-                                  + '-'
+                                  + '-backup-'
                                   + source_container['container_name']
                                  )
 
