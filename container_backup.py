@@ -74,14 +74,23 @@ def generate_destination_container_name(source_container_name,
         source_container_name: A string containing the source container's name.
         extra_identifier: An optional string containing extra identifying
             characteristics for a destination container, used to resolve
-            possible container name uniqueness issues.
+            possible container name uniqueness issues. Must not start or end
+            with a dash.
         datetimeobj: A datetime object.
     Returns:
         A string containing the destination container's name.
     """
+    if extra_identifier:
+        return (datetimeobj.strftime('%Y%m%d-%H%M')
+                + '-backup-'
+                + extra_identifier
+                + '-'
+                + source_container_name
+               )
+
+    # No extra ID
     return (datetimeobj.strftime('%Y%m%d-%H%M')
             + '-backup-'
-            + extra_identifier
             + source_container_name
            )
 
@@ -175,7 +184,7 @@ def main():
                 shorten_destination_container_name(
                     generate_destination_container_name(
                         source_container['container_name'],
-                        '-' + str(count) + '-',
+                        str(count),
                         )))
 
             if runtime_args.verbose:
