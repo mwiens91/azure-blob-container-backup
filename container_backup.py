@@ -101,6 +101,9 @@ for source_container in config['source_containers']:
                 '-' + str(count) + '-',
                 ))
 
+        # Increment the unique identifier count
+        count += 1
+
     # Make the container
     destination_blob_service.create_container(destination_container_name_tiny)
 
