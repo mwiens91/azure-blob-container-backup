@@ -12,6 +12,10 @@ import azure.storage.blob
 import yaml
 
 
+# ANSI escape for bold
+ANSI_BOLD = '\033[1m'
+ANSI_END = '\033[0m'
+
 # Script info
 NAME = "azure_blob_container_backup"
 DESCRIPTION = "Backup Azure blob containers"
@@ -193,19 +197,40 @@ def main():
         logpath = os.path.join(log_directory_path,
                                destination_container_name + '-log.txt')
 
+        # Backup the container
         with open(logpath, 'w') as logfile:
-            # Backup the container
-            subprocess.run(
+            # Create URLs for source and destinations containers
+            source_container_url = get_blob_container_url(
+                source_container['storage_account'],
+                source_container['container_name'])
+            destination_container_url = get_blob_container_url(
+                config['destination_storage_account']['storage_account'],
+                destination_container_name_tiny)
+
+            # Print to stdout that we're starting
+            if not runtime_args.quiet:
+                _message = (
+                    "\nBacking up container " + ANSI_BOLD + "%s" + ANSI_END
+                    + "\nfrom storage account " + ANSI_BOLD + "%s" + ANSI_END
+                    + "\nto container " + ANSI_BOLD + "%s" + ANSI_END
+                    + "\nin storage account " + ANSI_BOLD + "%s" + ANSI_END
+                    )
+                print(_message % (source_container['container_name'],
+                                  source_container['storage_account'],
+                                  destination_container_name_tiny,
+                                  config['destination_storage_account']['storage_account'],
+                                 ))
+                print("see logfile %s" % logpath, end="\n\n")
+
+            # Start the backup
+            job = subprocess.run(
                 ["azcopy",
                  "--source",
-                 get_blob_container_url(source_container['storage_account'],
-                                        source_container['container_name']),
+                 source_container_url,
                  "--source-key",
                  config['destination_storage_account']['storage_key'],
                  "--destination",
-                 get_blob_container_url(
-                     config['destination_storage_account']['storage_account'],
-                     destination_container_name_tiny),
+                 destination_container_url,
                  "--dest-key",
                  source_container['storage_key'],
                  "--recursive",                   # copy everything
@@ -215,6 +240,14 @@ def main():
                 stdout=logfile,                   # output to a log file
                 stderr=subprocess.STDOUT,         # combine stdout and stderr
                 )
+
+            # Print a message indicating success or failure
+            if job.returncode:
+                # Failure
+                print("Backup failed")
+            else:
+                # Success
+                print("Backup successful")
 
 
 if __name__ == '__main__':
