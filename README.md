@@ -1,4 +1,4 @@
-# azure_blob_container_backup
+# azure-blob-container-backup
 
 This is a script to backup Microsoft Azure blob containers.
 
