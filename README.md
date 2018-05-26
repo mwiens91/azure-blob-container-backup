@@ -42,7 +42,7 @@ cron](https://fossbytes.com/how-to-schedule-jobs-in-linux-cron-crontab/).
 ### Potentially very important
 
 If you're backing up **big** containers I'd recommend running this
-script on an Azure VM in the same region that one or both of the storage
+script on an Azure VM in the same region that one or more of the storage
 accounts are in. This is faster and cheaper than if they're in separate
 regions.
 
