@@ -83,15 +83,14 @@ def generate_destination_container_name(source_storage_account_name,
     Returns:
         A string containing the destination container's name.
     """
-    if extra_identifier:
-        return (datetimeobj.strftime('%Y%m%d%H%M')
-                + 'backup'
-                + extra_identifier
-                + '-'
-                + source_storage_account_name
-                + '-'
-                + source_container_name
-               )
+    return (datetimeobj.strftime('%Y%m%d%H%M')
+            + 'backup'
+            + extra_identifier
+            + '-'
+            + source_storage_account_name
+            + '-'
+            + source_container_name
+           )
 
 
 def shorten_destination_container_name(container_name):
@@ -159,6 +158,7 @@ def main():
     for source_container in config['source_containers']:
         # Make the name
         destination_container_name = generate_destination_container_name(
+            source_container['storage_account'],
             source_container['container_name'])
 
         # Ensure that it meets the name length restrictions of Azure containers
@@ -186,6 +186,7 @@ def main():
             destination_container_name_tiny = (
                 shorten_destination_container_name(
                     generate_destination_container_name(
+                        source_container['storage_account'],
                         source_container['container_name'],
                         str(count),
                         )))
