@@ -17,9 +17,9 @@ ANSI_BOLD = '\033[1m'
 ANSI_END = '\033[0m'
 
 # Script info
-NAME = "azure_blob_container_backup"
+NAME = "azure-blob-container-backup"
 DESCRIPTION = "Backup Azure blob containers"
-VERSION = "0.0.1"
+VERSION = "0.0.2"
 
 # Config file relative path
 CONFIG_FILE_NAME = "config.yaml"
