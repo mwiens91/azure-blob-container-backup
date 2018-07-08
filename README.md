@@ -51,8 +51,8 @@ regions.
 AzCopy doesn't like being parallelized. In my experience, it has
 complained (fatally) every time I've tried to run more than one instance
 of it. The consequences of this are that if you're running **long**
-jobs, you're going to need them to finish them before starting any other
-job, which means you're going to need to schedule intelligently (cf.
+jobs, you're going to need them to finish before starting any other
+job. This means you're going to need to schedule intelligently (cf.
 blindly) if you're using this to schedule regular backups.
 
 ### Probably not very important at all
