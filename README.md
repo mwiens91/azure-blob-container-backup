@@ -24,9 +24,10 @@ this to work. As of this writing, the easiest way to install this is to
 follow [Microsoft's installation instructions
 here](https://docs.microsoft.com/en-us/azure/storage/common/storage-use-azcopy-linux).
 
-Once that's done, fill in `config.yaml.example` and rename it to
-`config.yaml`, keeping it in the same directory as the main script
-(`container_backup.py`).
+Once that's done, copy [`config.yaml.example`](config.yaml.example) to
+`config.yaml` and fill in the latter with appropriate values, keeping it
+in the same directory as the main script
+([`container_backup.py`](container_backup.py)).
 
 Then run the script with
 
