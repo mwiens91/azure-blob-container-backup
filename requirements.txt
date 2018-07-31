@@ -70,6 +70,7 @@ azure-nspkg==2.0.0
 azure-servicebus==0.21.1
 azure-servicefabric==6.1.2.9
 azure-servicemanagement-legacy==0.20.6
+azure-storage==0.36.0
 azure-storage-blob==1.1.0
 azure-storage-common==1.1.0
 azure-storage-file==1.1.0
@@ -78,11 +79,12 @@ azure-storage-queue==1.1.0
 certifi==2018.4.16
 cffi==1.11.5
 chardet==3.0.4
-cryptography==2.2.2
+cryptography==2.3
 entrypoints==0.2.3
 futures==3.1.1
 idna==2.6
 isodate==0.6.0
+jeepney==0.3.1
 keyring==12.2.1
 msrest==0.4.29
 msrestazure==0.4.31
@@ -93,5 +95,6 @@ python-dateutil==2.7.3
 PyYAML==3.12
 requests==2.18.4
 requests-oauthlib==0.8.0
+SecretStorage==3.0.1
 six==1.11.0
 urllib3==1.22
