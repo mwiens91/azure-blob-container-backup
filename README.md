@@ -1,3 +1,5 @@
+![Python version](https://img.shields.io/badge/python-3-blue.svg)
+
 # azure-blob-container-backup
 
 This is a script to backup Microsoft Azure blob containers.
