@@ -135,7 +135,7 @@ def main():
     config_file_path = os.path.join(script_directory_path, CONFIG_FILE_NAME)
 
     with open(config_file_path, 'r') as yamlfile:
-        config = yaml.load(yamlfile)
+        config = yaml.safe_load(yamlfile)
 
     # Make sure the logs directory exists, and create it if not
     if runtime_args.verbose:
